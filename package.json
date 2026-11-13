@@ -1,0 +1,8 @@
+{
+  "name": "watericeio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
