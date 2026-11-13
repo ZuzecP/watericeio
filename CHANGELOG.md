@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1 (2026-11-13)
+
+### Changed
+- The results sit above the inputs, so a phone keyboard no longer covers the target weight.
+
 ## v1.0 (2026-11-13)
 
 First public version.

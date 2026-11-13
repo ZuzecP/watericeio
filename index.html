@@ -12,6 +12,21 @@
   <main>
     <h1>Watericeio</h1>
 
+    <section class="results" aria-live="polite">
+      <div class="result target">
+        <span class="result-label">Target weight</span>
+        <output id="target" for="rice">–</output>
+      </div>
+      <div class="result">
+        <span class="result-label">Water</span>
+        <output id="water" for="rice">–</output>
+      </div>
+      <div class="result">
+        <span class="result-label">Ratio</span>
+        <output id="ratio">–</output>
+      </div>
+    </section>
+
     <form id="form" novalidate>
       <div class="field">
         <label for="rice">Dry rice (g)</label>
@@ -34,20 +49,6 @@
       </fieldset>
     </form>
 
-    <section class="results" aria-live="polite">
-      <div class="result target">
-        <span class="result-label">Target weight</span>
-        <output id="target" for="rice">–</output>
-      </div>
-      <div class="result">
-        <span class="result-label">Water</span>
-        <output id="water" for="rice">–</output>
-      </div>
-      <div class="result">
-        <span class="result-label">Ratio</span>
-        <output id="ratio">–</output>
-      </div>
-    </section>
   </main>
 </body>
 </html>
