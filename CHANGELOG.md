@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.2 (2026-11-13)
+
+### Added
+- The claim under the title: "Just right water rice ratio".
+
+### Changed
+- Order is now rice field, results, then the options. A phone centres the focused field above the keyboard; with the field first, the page stays put and the results stay visible.
+- The stylesheet and script links carry a version, so a fresh page never loads with a cached older one.
+
 ## v1.1 (2026-11-13)
 
 ### Changed

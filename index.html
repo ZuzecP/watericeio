@@ -5,33 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>Watericeio</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="app.js"></script>
+  <!-- Bump ?v= on both lines when style.css or app.js changes. -->
+  <link rel="stylesheet" href="style.css?v=1.2">
+  <script type="module" src="app.js?v=1.2"></script>
 </head>
 <body>
   <main>
     <h1>Watericeio</h1>
-
-    <section class="results" aria-live="polite">
-      <div class="result target">
-        <span class="result-label">Target weight</span>
-        <output id="target" for="rice">–</output>
-      </div>
-      <div class="result">
-        <span class="result-label">Water</span>
-        <output id="water" for="rice">–</output>
-      </div>
-      <div class="result">
-        <span class="result-label">Ratio</span>
-        <output id="ratio">–</output>
-      </div>
-    </section>
+    <p class="tagline">Just right water rice ratio</p>
 
     <form id="form" novalidate>
       <div class="field">
         <label for="rice">Dry rice (g)</label>
         <input id="rice" name="rice" type="text" inputmode="numeric" autocomplete="off" maxlength="6">
       </div>
+
+      <section class="results" aria-live="polite">
+        <div class="result target">
+          <span class="result-label">Target weight</span>
+          <output id="target" for="rice">–</output>
+        </div>
+        <div class="result">
+          <span class="result-label">Water</span>
+          <output id="water" for="rice">–</output>
+        </div>
+        <div class="result">
+          <span class="result-label">Ratio</span>
+          <output id="ratio">–</output>
+        </div>
+      </section>
 
       <fieldset class="field">
         <legend>Type</legend>
