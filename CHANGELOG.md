@@ -4,6 +4,7 @@
 
 ### Added
 - The claim under the title: "Just right water rice ratio".
+- "rice" in the title is green.
 
 ### Changed
 - Order is now rice field, results, then the options. A phone centres the focused field above the keyboard; with the field first, the page stays put and the results stay visible.
