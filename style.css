@@ -52,42 +52,114 @@ h1 .rice {
 }
 
 .tagline {
-  margin: 0 0 0.9rem;
+  margin: 0 0 1rem;
   color: var(--muted);
   font-size: 0.85rem;
 }
 
-.field {
-  margin: 0 0 0.9rem;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
   padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
   border: 0;
-  min-width: 0;
 }
 
-.field > label,
-legend,
-.result-label {
-  display: block;
-  padding: 0;
-  margin-bottom: 0.35rem;
-  color: var(--muted);
-  font-size: 0.8rem;
-  letter-spacing: 0.02em;
+/* The sentence: "[270] grams of [Jasmine rice]". Wraps only when the rice name is long. */
+.sentence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.45rem;
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
 }
 
-#rice {
-  width: 100%;
-  padding: 0.6rem 0.75rem;
+.sentence > span {
+  white-space: nowrap;
+}
+
+#rice,
+#type {
   border: 1px solid var(--border);
   border-radius: 0.6rem;
   background: var(--surface);
   color: var(--text);
   font: inherit;
-  font-size: 1.5rem;
-  font-variant-numeric: tabular-nums;
 }
 
-#rice:focus-visible {
+/* Inputs stay at 16px or larger: iOS zooms the page when a smaller field gets focus. */
+#rice {
+  width: 3.6rem;
+  padding: 0.45rem 0.2rem;
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+#rice::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.select {
+  position: relative;
+  display: inline-flex;
+}
+
+/* The chevron. */
+.select::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0.65rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-top: -0.35rem;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+#type,
+.select-probe {
+  padding: 0.55rem 1.7rem 0.55rem 0.6rem;
+  font-size: inherit;
+}
+
+#type {
+  max-width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+/* Invisible copy of the chosen rice name; app.js measures it to size the select. */
+.select-probe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* The smallest phones: tighten the sentence so every rice name still fits on one line. */
+@media (max-width: 340px) {
+  .sentence {
+    gap: 0.4rem 0.35rem;
+    font-size: 1rem;
+  }
+}
+
+#rice:focus-visible,
+#type:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
@@ -95,46 +167,6 @@ legend,
 #rice[aria-invalid="true"] {
   border-color: var(--error);
   outline-color: var(--error);
-}
-
-.options {
-  display: flex;
-  gap: 0.4rem;
-}
-
-.option {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-.option input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  margin: 0;
-}
-
-.option label {
-  display: block;
-  padding: 0.6rem 0.25rem;
-  border: 1px solid var(--border);
-  border-radius: 0.6rem;
-  background: var(--surface);
-  text-align: center;
-  cursor: pointer;
-}
-
-.option input:checked + label {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--accent-text);
-  font-weight: 600;
-}
-
-.option input:focus-visible + label {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 
 .results {
@@ -146,6 +178,18 @@ legend,
   border: 1px solid var(--border);
   border-radius: 0.6rem;
   background: var(--surface);
+}
+
+.results[hidden] {
+  display: none;
+}
+
+.result-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
 }
 
 .result output {
@@ -164,4 +208,53 @@ legend,
   font-size: 3.5rem;
   font-weight: 700;
   line-height: 1.05;
+}
+
+/* A toggle: one rounded track, the chosen option filled. */
+.toggle {
+  margin: 0 0 0.7rem;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.options {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.option {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.option input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+}
+
+.option label {
+  display: block;
+  padding: 0.55rem 0.25rem;
+  border-radius: 999px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.option input:checked + label {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.option input:focus-visible + label {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }

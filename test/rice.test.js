@@ -1,52 +1,104 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { RATIOS, MAX_RICE, parseRice, calculate, formatRatio } from '../rice.js';
-
-const METHOD = 'rice-cooker';
+import { RATIOS, TYPE_GROUPS, MAX_RICE, parseRice, calculate, formatRatio } from '../rice.js';
 
 // [type, preference, ratio, water at 300 g, water at 157 g]
-const COMBINATIONS = [
+const RICE_COOKER = [
   ['jasmine', 'fluffy', 1.4, 420, 220],
   ['jasmine', 'grainy', 1.25, 375, 196],
   ['basmati', 'fluffy', 1.9, 570, 298],
   ['basmati', 'grainy', 1.65, 495, 259],
+  ['long-grain', 'fluffy', 1.9, 570, 298],
+  ['long-grain', 'grainy', 1.65, 495, 259],
   ['sushi', 'rolling', 1.25, 375, 196],
   ['sushi', 'onigiri', 1.35, 405, 212],
   ['sushi', 'poke', 1.3, 390, 204],
+  ['short-grain', 'soft', 1.4, 420, 220],
+  ['short-grain', 'firm', 1.3, 390, 204],
 ];
 
-for (const [type, preference, ratio, water300, water157] of COMBINATIONS) {
-  test(`${type} ${preference}: 300 g rice`, () => {
-    assert.deepEqual(calculate({ rice: 300, method: METHOD, type, preference }), {
-      ratio,
-      water: water300,
-      target: 300 + water300,
-    });
-  });
+// Hob and oven share one set of ratios (see docs/sources.md).
+const HOB_AND_OVEN = [
+  ['jasmine', 'fluffy', 1.65, 495, 259],
+  ['jasmine', 'grainy', 1.45, 435, 228],
+  ['basmati', 'fluffy', 2.0, 600, 314],
+  ['basmati', 'grainy', 1.8, 540, 283],
+  ['long-grain', 'fluffy', 2.0, 600, 314],
+  ['long-grain', 'grainy', 1.8, 540, 283],
+  ['sushi', 'rolling', 1.4, 420, 220],
+  ['sushi', 'onigiri', 1.5, 450, 236],
+  ['sushi', 'poke', 1.45, 435, 228],
+  ['short-grain', 'soft', 1.55, 465, 243],
+  ['short-grain', 'firm', 1.45, 435, 228],
+];
 
-  test(`${type} ${preference}: 157 g rice`, () => {
-    assert.deepEqual(calculate({ rice: 157, method: METHOD, type, preference }), {
-      ratio,
-      water: water157,
-      target: 157 + water157,
+const EXPECTED = {
+  'rice-cooker': RICE_COOKER,
+  hob: HOB_AND_OVEN,
+  oven: HOB_AND_OVEN,
+};
+
+const METHOD = 'rice-cooker';
+
+for (const [method, combinations] of Object.entries(EXPECTED)) {
+  for (const [type, preference, ratio, water300, water157] of combinations) {
+    test(`${method}, ${type} ${preference}: 300 g rice`, () => {
+      assert.deepEqual(calculate({ rice: 300, method, type, preference }), {
+        ratio,
+        water: water300,
+        target: 300 + water300,
+      });
     });
-  });
+
+    test(`${method}, ${type} ${preference}: 157 g rice`, () => {
+      assert.deepEqual(calculate({ rice: 157, method, type, preference }), {
+        ratio,
+        water: water157,
+        target: 157 + water157,
+      });
+    });
+  }
 }
 
-test('the table has exactly the 7 rice cooker combinations', () => {
-  assert.deepEqual(Object.keys(RATIOS), [METHOD]);
-  const found = [];
-  for (const [type, preferences] of Object.entries(RATIOS[METHOD])) {
-    for (const preference of Object.keys(preferences)) found.push(`${type} ${preference}`);
+test('the table has exactly the expected methods and combinations', () => {
+  assert.deepEqual(Object.keys(RATIOS), ['rice-cooker', 'hob', 'oven']);
+  for (const [method, combinations] of Object.entries(EXPECTED)) {
+    const found = [];
+    for (const [type, preferences] of Object.entries(RATIOS[method])) {
+      for (const preference of Object.keys(preferences)) found.push(`${type} ${preference}`);
+    }
+    assert.deepEqual(found.sort(), combinations.map(([t, p]) => `${t} ${p}`).sort(), method);
   }
-  assert.deepEqual(found.sort(), COMBINATIONS.map(([t, p]) => `${t} ${p}`).sort());
 });
 
-test('preferences are listed in display order', () => {
-  assert.deepEqual(Object.keys(RATIOS[METHOD]), ['jasmine', 'basmati', 'sushi']);
-  assert.deepEqual(Object.keys(RATIOS[METHOD].jasmine), ['fluffy', 'grainy']);
-  assert.deepEqual(Object.keys(RATIOS[METHOD].basmati), ['fluffy', 'grainy']);
-  assert.deepEqual(Object.keys(RATIOS[METHOD].sushi), ['rolling', 'onigiri', 'poke']);
+test('types and preferences are listed in display order for every method', () => {
+  for (const method of Object.keys(RATIOS)) {
+    assert.deepEqual(
+      Object.keys(RATIOS[method]),
+      ['jasmine', 'basmati', 'long-grain', 'sushi', 'short-grain'],
+      method,
+    );
+    assert.deepEqual(Object.keys(RATIOS[method].jasmine), ['fluffy', 'grainy']);
+    assert.deepEqual(Object.keys(RATIOS[method].basmati), ['fluffy', 'grainy']);
+    assert.deepEqual(Object.keys(RATIOS[method]['long-grain']), ['fluffy', 'grainy']);
+    assert.deepEqual(Object.keys(RATIOS[method].sushi), ['rolling', 'onigiri', 'poke']);
+    assert.deepEqual(Object.keys(RATIOS[method]['short-grain']), ['soft', 'firm']);
+  }
+});
+
+test('jasmine is the first type, so it is the default', () => {
+  assert.equal(TYPE_GROUPS[0].types[0], 'jasmine');
+});
+
+test('the pick-list groups hold every type exactly once', () => {
+  assert.deepEqual(
+    TYPE_GROUPS.map((group) => group.label),
+    ['Long grain', 'Short grain'],
+  );
+  const grouped = TYPE_GROUPS.flatMap((group) => group.types);
+  for (const method of Object.keys(RATIOS)) {
+    assert.deepEqual(grouped, Object.keys(RATIOS[method]), method);
+  }
 });
 
 test('half a gram of water rounds up', () => {
@@ -64,11 +116,13 @@ test('water below half a gram rounds down', () => {
 });
 
 test('target is always rice plus water, in whole grams', () => {
-  for (const [type, preference] of COMBINATIONS) {
-    for (const rice of [1, 10, 157, MAX_RICE]) {
-      const { water, target } = calculate({ rice, method: METHOD, type, preference });
-      assert.ok(Number.isInteger(water), `${type} ${preference} ${rice}: water`);
-      assert.equal(target, rice + water, `${type} ${preference} ${rice}: target`);
+  for (const [method, combinations] of Object.entries(EXPECTED)) {
+    for (const [type, preference] of combinations) {
+      for (const rice of [1, 10, 157, MAX_RICE]) {
+        const { water, target } = calculate({ rice, method, type, preference });
+        assert.ok(Number.isInteger(water), `${method} ${type} ${preference} ${rice}: water`);
+        assert.equal(target, rice + water, `${method} ${type} ${preference} ${rice}: target`);
+      }
     }
   }
 });
@@ -116,7 +170,7 @@ for (const rice of [0, -1, 2000, 300.5, NaN, '300', null, undefined]) {
 }
 
 test('calculate rejects an unknown method', () => {
-  assert.equal(calculate({ rice: 300, method: 'stovetop', type: 'jasmine', preference: 'fluffy' }), null);
+  assert.equal(calculate({ rice: 300, method: 'microwave', type: 'jasmine', preference: 'fluffy' }), null);
 });
 
 test('calculate rejects an unknown type', () => {
