@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Watericeio</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Watericeio</h1>
+
+    <form id="form" novalidate>
+      <div class="field">
+        <label for="rice">Dry rice (g)</label>
+        <input id="rice" name="rice" type="text" inputmode="numeric" autocomplete="off" maxlength="6">
+      </div>
+
+      <fieldset class="field">
+        <legend>Type</legend>
+        <div class="options" id="type"></div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Preference</legend>
+        <div class="options" id="preference"></div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Method</legend>
+        <div class="options" id="method"></div>
+      </fieldset>
+    </form>
+
+    <section class="results" aria-live="polite">
+      <div class="result target">
+        <span class="result-label">Target weight</span>
+        <output id="target" for="rice">–</output>
+      </div>
+      <div class="result">
+        <span class="result-label">Water</span>
+        <output id="water" for="rice">–</output>
+      </div>
+      <div class="result">
+        <span class="result-label">Ratio</span>
+        <output id="ratio">–</output>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

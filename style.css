@@ -1,0 +1,155 @@
+:root {
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --text: #1f1d1a;
+  --muted: #6b665e;
+  --border: #d9d4ca;
+  --accent: #2f6f4f;
+  --accent-text: #ffffff;
+  --error: #b3261e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #171614;
+    --surface: #22201d;
+    --text: #f1eee8;
+    --muted: #a39d92;
+    --border: #3a3732;
+    --accent: #7fc8a0;
+    --accent-text: #10241a;
+    --error: #ff8a80;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+main {
+  max-width: 26rem;
+  margin: 0 auto;
+  padding: 1rem 1rem 1.5rem;
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.field {
+  margin: 0 0 0.9rem;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.field > label,
+legend,
+.result-label {
+  display: block;
+  padding: 0;
+  margin-bottom: 0.35rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+#rice {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#rice:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+#rice[aria-invalid="true"] {
+  border-color: var(--error);
+  outline-color: var(--error);
+}
+
+.options {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.option {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.option input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+}
+
+.option label {
+  display: block;
+  padding: 0.6rem 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--surface);
+  text-align: center;
+  cursor: pointer;
+}
+
+.option input:checked + label {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.option input:focus-visible + label {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+.result output {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.result.target {
+  grid-column: 1 / -1;
+}
+
+.result.target output {
+  color: var(--accent);
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.05;
+}
